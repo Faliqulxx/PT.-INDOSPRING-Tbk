@@ -3,8 +3,15 @@
 
 @section('content')
 <div class="app-head p-3 px-4 mb-3 d-flex align-items-center gap-3">
-    <span class="fs-3">&#128230;</span>
-    <h1 class="h4 m-0">Transaksi Barang</h1>
+    <span class="d-inline-flex align-items-center justify-content-center bg-white bg-opacity-25 rounded-3 p-2 text-white shadow-sm" style="width: 44px; height: 44px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+        </svg>
+    </span>
+    <div>
+        <h1 class="h4 m-0 fw-bold">Transaksi Barang</h1>
+        <div class="small text-white-50">Pengelolaan mutasi barang masuk &amp; keluar</div>
+    </div>
 </div>
 
 <div id="alertBox"></div>
@@ -48,38 +55,46 @@
             </thead>
             <tbody id="detailBody"></tbody>
         </table>
-        <div id="emptyBox" class="empty-box text-center">
-            <div class="fs-2">&#128230;</div>Belum ada item
+        <div id="emptyBox" class="empty-box text-center py-4">
+            <div class="mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" fill="#94a3b8" viewBox="0 0 16 16">
+                    <path d="M4.98 4a.5.5 0 0 0-.39.188L1.54 8H6a.5.5 0 0 1 .5.5 1.5 1.5 0 1 0 3 0A.5.5 0 0 1 10 8h4.46l-3.05-3.812A.5.5 0 0 0 11.02 4zm9.954 5H10.45a2.5 2.5 0 0 1-4.9 0H1.066l.32 2.562a.5.5 0 0 0 .497.438h12.234a.5.5 0 0 0 .496-.438zM3.804 3.5a1.5 1.5 0 0 1 1.17-.562h6.052a1.5 1.5 0 0 1 1.17.563l3.871 4.838A.5.5 0 0 1 16 8.5v8a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1v-8a.5.5 0 0 1 .126-.334z"/>
+                </svg>
+            </div>
+            <div class="fw-medium">Belum ada item barang</div>
+            <div class="small text-muted">Klik tombol "+ Tambah Item (F7)" untuk menambahkan detail mutasi.</div>
         </div>
         <div class="d-flex gap-2 pt-2 border-top">
-            <button type="button" class="btn btn-primary btn-sm" id="btnAddItem">+ Tambah Item (F7)</button>
-            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnDelItem">Hapus Item</button>
+            <button type="button" class="btn btn-primary btn-sm" id="btnAddItem"><i class="bi bi-plus-lg me-1"></i> Tambah Item (F7)</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" id="btnDelItem"><i class="bi bi-trash3 me-1"></i> Hapus Item</button>
             <span class="text-muted small ms-2 align-self-center">Centang baris lalu klik Hapus Item.</span>
         </div>
     </div>
 </div>
 
 <div class="d-flex gap-2 mb-4">
-    <button type="button" class="btn btn-primary px-4" id="btnTambah">Tambah</button>
-    <button type="button" class="btn btn-outline-primary px-4" id="btnKoreksi" disabled>Koreksi</button>
-    <button type="button" class="btn btn-outline-danger px-4" id="btnHapus" disabled>Hapus</button>
-    <button type="button" class="btn btn-light ms-auto" id="btnBaru">Form Baru</button>
+    <button type="button" class="btn btn-primary px-4" id="btnTambah"><i class="bi bi-save2 me-1"></i> Tambah</button>
+    <button type="button" class="btn btn-outline-primary px-4" id="btnKoreksi" disabled><i class="bi bi-pencil-square me-1"></i> Koreksi</button>
+    <button type="button" class="btn btn-outline-danger px-4" id="btnHapus" disabled><i class="bi bi-trash me-1"></i> Hapus</button>
+    <button type="button" class="btn btn-light ms-auto" id="btnBaru"><i class="bi bi-arrow-clockwise me-1"></i> Form Baru</button>
 </div>
 
 <div class="card shadow-sm">
-    <div class="card-header bg-white fw-semibold">Daftar Transaksi <span class="text-muted fw-normal small">(klik Pilih untuk Koreksi / Hapus)</span></div>
+    <div class="card-header bg-white fw-semibold d-flex align-items-center justify-content-between">
+        <div><i class="bi bi-clock-history me-1 text-primary"></i> Daftar Transaksi <span class="text-muted fw-normal small">(klik Pilih untuk Koreksi / Hapus)</span></div>
+    </div>
     <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
             <thead class="table-light"><tr><th>No. Transaksi</th><th>Tanggal</th><th>Jenis</th><th>Kategori</th><th class="text-end">Jml Item</th><th></th></tr></thead>
             <tbody>
             @forelse ($daftar as $d)
                 <tr data-no="{{ $d->NO_TRANSAKSI }}">
-                    <td>{{ $d->NO_TRANSAKSI }}</td>
+                    <td class="fw-semibold text-primary">{{ $d->NO_TRANSAKSI }}</td>
                     <td>{{ \Carbon\Carbon::parse($d->TANGGAL)->format('d/m/Y') }}</td>
                     <td><span class="badge {{ $d->JENIS_TRANSAKSI === 'MASUK' ? 'text-bg-success' : 'text-bg-warning' }}">{{ $d->JENIS_TRANSAKSI }}</span></td>
-                    <td>{{ $d->KATEGORI }}</td>
-                    <td class="text-end">{{ $d->JML_ITEM }}</td>
-                    <td class="text-end"><button class="btn btn-sm btn-outline-primary btn-pilih" data-no="{{ $d->NO_TRANSAKSI }}">Pilih</button></td>
+                    <td><span class="badge bg-light text-dark border">{{ $d->KATEGORI }}</span></td>
+                    <td class="text-end fw-semibold">{{ $d->JML_ITEM }}</td>
+                    <td class="text-end"><button class="btn btn-sm btn-outline-primary btn-pilih" data-no="{{ $d->NO_TRANSAKSI }}"><i class="bi bi-check2-circle me-1"></i> Pilih</button></td>
                 </tr>
             @empty
                 <tr><td colspan="6" class="text-center text-muted py-4">Belum ada transaksi.</td></tr>
