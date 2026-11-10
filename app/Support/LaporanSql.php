@@ -2,6 +2,8 @@
 
 namespace App\Support;
 
+use Illuminate\Support\Facades\DB;
+
 /**
  * Query laporan 3.1 - 3.3. Setiap query memakai 2 placeholder (?) berurutan:
  * tanggal awal dan tanggal akhir (inklusif). Sintaks kompatibel dengan SQL Server.
@@ -10,6 +12,11 @@ class LaporanSql
 {
     private static function cte(): string
     {
+        $isSqlite = DB::connection()->getDriverName() === 'sqlite';
+        $dateFilter = $isSqlite
+            ? "h.TANGGAL >= ? AND h.TANGGAL < date(?, '+1 day')"
+            : "h.TANGGAL >= ? AND h.TANGGAL < DATEADD(DAY, 1, ?)";
+
         return "WITH STOK AS (
     SELECT b.KODE_BARANG, b.NAMA_BARANG, b.SATUAN, b.KATEGORI,
            COALESCE(SUM(CASE WHEN h.JENIS_TRANSAKSI = 'MASUK'  THEN d.QTY END), 0) AS TRANS_MASUK,
@@ -17,7 +24,7 @@ class LaporanSql
     FROM MSBARANG b
     LEFT JOIN TRMUTASIDT d ON d.KODE_BARANG = b.KODE_BARANG
     LEFT JOIN TRMUTASIHD h ON h.NO_TRANSAKSI = d.NO_TRANSAKSI
-                          AND h.TANGGAL >= ? AND h.TANGGAL <= ?
+                          AND $dateFilter
     GROUP BY b.KODE_BARANG, b.NAMA_BARANG, b.SATUAN, b.KATEGORI
 )\n";
     }
