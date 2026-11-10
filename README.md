@@ -17,7 +17,7 @@ Repositori ini berisi kode sumber aplikasi web pengelolaan mutasi barang masuk &
 ---
 
 ## 2. Catatan Transparansi Status Pengujian
-- **Status Pengujian**: Aplikasi kini sudah diuji penuh di **Microsoft SQL Server 2025 Express** (instance `SQLEXPRESS`) dengan **PHP 8.1.25** + driver **`pdo_sqlsrv` 5.12.0** + **Microsoft ODBC Driver 18 for SQL Server**. Seluruh alur (form input, validasi bisnis, relasi data, aksi Koreksi/Hapus, kalkulasi stok, dan laporan 3.1–3.3) telah diuji dan **lulus 100% di SQL Server**.
+- **Status Pengujian**: Aplikasi kini sudah diuji penuh di **Microsoft SQL Server 2025 Express** (instance `SQLEXPRESS`) dengan **PHP 8.1.25** + driver **`pdo_sqlsrv` 5.12.0** + **Microsoft ODBC Driver 18 for SQL Server**. Seluruh alur (form input, validasi bisnis, relasi data, aksi Koreksi/Hapus, kalkulasi stok, dan laporan 3.1–3.3) telah diuji dan **lulus di SQL Server**.
 - **Dukungan Multi-Database**: Basis data utama berjalan di SQL Server, namun **SQLite tetap bisa dipakai sebagai alternatif lewat `.env`** (`DB_CONNECTION=sqlite`).
 - **Catatan Perubahan & Kompatibilitas**:
   - **Seeder (`MsBarangSeeder`)**: Memakai `upsert()` (bukan `insertOrIgnore()`, karena `insertOrIgnore` tidak didukung oleh driver SQL Server).
