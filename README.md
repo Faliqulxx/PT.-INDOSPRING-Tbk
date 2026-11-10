@@ -17,9 +17,13 @@ Repositori ini berisi kode sumber aplikasi web pengelolaan mutasi barang masuk &
 ---
 
 ## 2. Catatan Transparansi Status Pengujian
-- **Status Pengujian Logika & Web**: Seluruh alur aplikasi (form input, validasi bisnis, relasi data, aksi Koreksi/Hapus, kalkulasi stok) telah diuji dan **lulus 100%**.
-- **Lingkungan Uji**: Pengujian aplikasi web lokal dijalankan menggunakan driver SQLite karena mesin pengembangan lokal belum terpasang modul `pdo_sqlsrv` dan Microsoft ODBC Driver.
-- **Kompatibilitas SQL Server (T-SQL)**: Seluruh skrip skema tabel (`sql/01_schema.sql`) dan query laporan (`sql/03_laporan.sql` / `app/Support/LaporanSql.php`) dirancang dengan standar T-SQL SQL Server (menggunakan Common Table Expression `WITH STOK AS (...)` dan Window Function `RANK() OVER (PARTITION BY ...)`). Query tersebut diverifikasi menghasilkan angka yang persis sesuai soal.
+- **Status Pengujian**: Aplikasi kini sudah diuji penuh di **Microsoft SQL Server 2025 Express** (instance `SQLEXPRESS`) dengan **PHP 8.1.25** + driver **`pdo_sqlsrv` 5.12.0** + **Microsoft ODBC Driver 18 for SQL Server**. Seluruh alur (form input, validasi bisnis, relasi data, aksi Koreksi/Hapus, kalkulasi stok, dan laporan 3.1–3.3) telah diuji dan **lulus 100% di SQL Server**.
+- **Dukungan Multi-Database**: Basis data utama berjalan di SQL Server, namun **SQLite tetap bisa dipakai sebagai alternatif lewat `.env`** (`DB_CONNECTION=sqlite`).
+- **Catatan Perubahan & Kompatibilitas**:
+  - **Seeder (`MsBarangSeeder`)**: Memakai `upsert()` (bukan `insertOrIgnore()`, karena `insertOrIgnore` tidak didukung oleh driver SQL Server).
+  - **Sertifikat ODBC Driver 18**: `DB_TRUST_SERVER_CERTIFICATE=true` wajib disetel untuk ODBC Driver 18 di server lokal tanpa sertifikat tepercaya.
+  - **Kompatibilitas T-SQL**: Seluruh query laporan (`sql/03_laporan.sql` / `app/Support/LaporanSql.php`) valid di SQL Server menggunakan Common Table Expression `WITH STOK AS (...)` dan Window Function `RANK() OVER (PARTITION BY ...)`.
+  - **Penomoran Otomatis**: Dilengkapi *locking* (`lockForUpdate()`) di dalam `DB::transaction()` untuk menjamin keamanan penomoran otomatis di SQL Server.
 
 ---
 

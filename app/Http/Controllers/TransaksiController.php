@@ -53,17 +53,20 @@ class TransaksiController extends Controller
     {
         $data = $this->validated($request);
 
-        $no = strtoupper(trim((string) ($data['NO_TRANSAKSI'] ?? '')));
-        if ($no === '') {
-            $no = $this->generateNo();
-        }
-        if (TrMutasiHd::whereKey($no)->exists()) {
-            throw ValidationException::withMessages(['NO_TRANSAKSI' => "No. Transaksi $no sudah dipakai."]);
+        $noInput = strtoupper(trim((string) ($data['NO_TRANSAKSI'] ?? '')));
+        if ($noInput !== '' && TrMutasiHd::whereKey($noInput)->exists()) {
+            throw ValidationException::withMessages(['NO_TRANSAKSI' => "No. Transaksi $noInput sudah dipakai."]);
         }
 
         $this->cekAturanBisnis($data, null);
 
-        DB::transaction(function () use ($data, $no) {
+        $no = DB::transaction(function () use ($data, $noInput) {
+            $no = $noInput !== '' ? $noInput : $this->generateNo(true);
+
+            if ($noInput === '' && TrMutasiHd::whereKey($no)->exists()) {
+                throw ValidationException::withMessages(['NO_TRANSAKSI' => "No. Transaksi $no sudah dipakai."]);
+            }
+
             TrMutasiHd::create([
                 'NO_TRANSAKSI'    => $no,
                 'TANGGAL'         => $data['TANGGAL'],
@@ -71,6 +74,8 @@ class TransaksiController extends Controller
                 'KATEGORI'        => $data['KATEGORI'],
             ]);
             $this->simpanDetail($no, $data['items']);
+
+            return $no;
         });
 
         return response()->json(['message' => "Transaksi $no berhasil disimpan.", 'NO_TRANSAKSI' => $no]);
@@ -214,9 +219,13 @@ class TransaksiController extends Controller
         ], $items));
     }
 
-    private function generateNo(): string
+    private function generateNo(bool $lock = false): string
     {
-        $max = TrMutasiHd::pluck('NO_TRANSAKSI')
+        $query = TrMutasiHd::query();
+        if ($lock) {
+            $query->lockForUpdate();
+        }
+        $max = $query->pluck('NO_TRANSAKSI')
             ->map(fn ($n) => (int) preg_replace('/\D/', '', $n))
             ->max() ?? 0;
 
